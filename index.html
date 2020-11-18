@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>minesweeper</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <h1>MINESWEEPER</h1>
+    <div class="levels">
+        <label><input type="radio" name="level" onclick="getLevel(4,2)"> Beginner</label>
+        <label><input type="radio" name="level" onclick="getLevel(8,12)"> Medium</label>
+        <label><input type="radio" name="level" onclick="getLevel(12,30)"> Expert</label>
+    </div>
+    <div class="content">
+        <div class="header">
+            <span class="bestScore">BEST SCORE:
+                <span class="score"> 00</span>
+            </span>
+            <span class="emoji" onclick="restart()">😃</span>
+            <span class="timer">00:00</span>
+            <span class="lives">
+                <img class="img" src="imgs/heart.png">
+                <img class="img" src="imgs/heart.png">
+                <img class="img" src="imgs/heart.png">
+            
+            </span>
+        </div>
+        <table>
+            <tbody class="board">
+
+            </tbody>
+        </table>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/maim.js"></script>
+</body>
+
+</html>
