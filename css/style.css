@@ -1,0 +1,83 @@
+*{
+    box-sizing: border-box;
+}
+  body{
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    text-align: center;
+    transition: .3s;
+    background-color: rgb(41, 39, 39);
+    color: wheat
+}
+
+h1{
+    font-size: 50px;
+    margin-bottom: 30px;
+}
+.header{
+    background-color: rgb(71, 62, 62);
+    text-align: center;
+    font-size: 40px;
+    padding: 20px;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-left: none;
+    margin-top: none;
+}
+.header span{
+margin-right: 60px;
+}
+
+
+.cell {
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    font-size: 1em;
+    transition: .3s;
+   background-color: rgba(170, 145, 145, 0.616);
+   position:relative; 
+   border-radius: 2%;
+   z-index:-1
+   
+}
+.cell:hover{
+    background-color: rgba(155, 138, 138, 0.747);
+    transform: scale(1.1);
+    cursor: pointer;
+    position:relative; 
+    z-index:1
+}
+
+.show{
+    background-color:   rgba(155, 138, 138, 0.5);
+}
+
+.mine.show{
+    background-color: rgba(134, 87, 87, 0.473);
+}
+
+.img{
+    width: 40px;
+}
+
+.emoji:hover{
+    transform: scale(1.3);
+    transition: .3s;
+    cursor: pointer;
+}
+
+.emoji{
+    width: 40px;
+  
+}
+
+table{
+    margin-top: 50px;
+    /* position: absolute; */
+    margin:  auto;
+    text-align : center;
+}
+
+.span{
+    display: inline-block;
+}
