@@ -16,3 +16,16 @@ function countNegs(mat, rowIdx, colIdx) {
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min); // Min is inclusive, Max is Exclusive
 }
+
+// פונקצית מטריתה גנרית 
+function createMat(size) {
+    var mat = []
+    for (var i = 0; i < size; i++) {
+        mat[i] = []
+        for (var j = 0; j < size; j++) {
+            mat[i][j] = ''
+        }
+    }
+    return mat;
+}
+

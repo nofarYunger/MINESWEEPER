@@ -1,49 +1,98 @@
 'use strict'
 
-function undo() {
-    console.log(gGame.lastPlayBoard);
-    console.log(gBoard);
-    gBoard = gGame.lastPlayBoard.slice()
-    renderBoard(gBoard)
-    console.log('undo');
-}
 
 function checkHighScore() {
-    var elTime = document.querySelector('.timer')
-    var time = elTime.innerText;
-    console.log(time);
+    var time = document.querySelector('.timer').innerText;
     var realTimeArr = time.split(':')
-    var realTime = realTimeArr[0] + '.' + realTimeArr[1]
-    console.log(realTimeArr);
-    console.log(realTime);
-    var timeIsANum = false
+    var realTime = realTimeArr[0] + '.' + realTimeArr[1] /*makes a str like : '07.12' */
+
+    // take down all the useless zeros(not sure if necessary yet)
+    var timeIsANum = false;
     while (!timeIsANum) {
-        if (realTime[0] === '0') realTime = realTime.slice(1, realTime.length)
-        if (realTime[realTime.length - 1] === '0') realTime = realTime.slice(0, realTime.length - 1)
+        if (realTime[0] === '0') realTime = realTime.slice(1, realTime.length);
+        if (realTime[realTime.length - 1] === '0') realTime = realTime.slice(0, realTime.length - 1);
 
         if (realTime[0] !== '0' && realTime[realTime.length - 1] !== '0') timeIsANum = true;
     }
-    console.log(realTime);
-    console.log(gLevel.highScore);
-    console.log(realTime < gLevel.highScore);
+    // save the high score in the right level
     if (realTime < gLevel.highScore) {
         var currLevel = gLevel.level;
         switch (currLevel) {
             case 'beginer':
-                gHighScore.beginer = +realTime
+                gHighScore.beginer = +realTime;
                 break;
             case 'medium':
-                gHighScore.expert = +realTime
+                gHighScore.medium = +realTime;
                 break;
             case 'expert':
-                gHighScore.expert = +realTime
+                gHighScore.expert = +realTime;
                 break;
 
             default:
                 return;
         }
-        gHighScore.beginer = +realTime
-        gLevel.highScore = +realTime
-        document.querySelector('.score').innerText = time
+        // update the model
+        gLevel.highScore = +realTime;
+        // update the DOM
+        document.querySelector('.score').innerText = time;
+    }
+}
+// when undo is clicked
+function undo() {
+    console.table(gGame.lastPlayBoard);
+    console.table(gBoard);
+    // renderBoard(gGame.lastPlayBoard)
+    renderBoard(duplicate(gGame.lastPlayBoard))
+    gGame.lastPlayBoard = gGame.lastPlayBoard
+    // duplicate(gBoard, gGame.lastPlayBoard)
+    console.log('undo');
+}
+
+// copy the current gBoard and save it in the gGame object.
+function duplicate(dupBoard) {
+    for (var i = 0; i < gBoard.length; i++)
+        for (var j = 0; j < gBoard[i].length; j++)
+            dupBoard[i][j] = gBoard[i][j];
+    return dupBoard;
+}
+
+function clickAMine(elCell, cellPos) {
+    console.log(elCell);
+    if (gGame.lives !== 0) var audio = new Audio('./audio/error.mp3');
+    else var audio = new Audio('./audio/gameOver.mp3');
+
+    audio.play();
+
+    setTimeout(changeMineBackToHide, 500, elCell, cellPos)
+}
+
+// hide mine after a click 
+function changeMineBackToHide(elCell, cellPos) {
+   
+    // update the model
+    gBoard[cellPos.i][cellPos.j].isShown = false;
+    // update the DOM
+    elCell.classList.replace('show', 'hide');
+    renderBoard(gBoard);
+}
+
+// render the hearts 
+function renderLives() {
+    var elLives = document.querySelector('.lives');
+    switch (gGame.lives) {
+        case 3:
+            elLives.innerHTML = `${LIFE}${LIFE}${LIFE}`
+            break;
+        case 2:
+            elLives.innerHTML = `${LIFE}${LIFE}${blk_LIFE}`
+            break;
+        case 1:
+            elLives.innerHTML = `${LIFE}${blk_LIFE}${blk_LIFE}`
+            break;
+        case 0:
+            elLives.innerHTML = `${blk_LIFE}${blk_LIFE}${blk_LIFE}`
+            break;
+        default:
+            break;
     }
 }
