@@ -1,20 +1,30 @@
 'use strict'
 
-const MINE = '<img class="img" src="./imgs/mine.jpg">';
-const FLAG = '<img class="img" src="./imgs/flag.png">';
-const LIFE = '<img class="img" src="./imgs/heart.png">';
+const MINE = '<img class="img" src="imgs/mine.jpg">';
+const FLAG = '<img class="img" src="imgs/flag.png">';
+const HINT = '<img class="img" src="imgs/bulb.png">';
+const LIFE = '<img class="img" src="imgs/heart.png">';
+const blk_LIFE = '<img class="black-heart" src="imgs/black-heart.png">';
+
 const EMPTY = '';
 
 
 var gStartTime = null
 var gIntervalId = null
 var gBoard;
+var gHighScore = {
+    beginer: Infinity,
+    medium: Infinity,
+    expert: Infinity
+}
 var gLevel = {}
 var gGame = {
     isOn: false,
     shownCount: 0,
     markedCount: 0,
-    secsPassed: 0
+    secsPassed: 0,
+    lastPlayBoard: null
+
 }
 
 // from the radio btn
@@ -22,6 +32,22 @@ function getLevel(boardSize, numOfMines) {
     gLevel.SIZE = boardSize;
     gLevel.MINES = numOfMines;
 
+    // get the right high-score
+    if (boardSize === 4) {
+        gLevel.level = 'beginer'
+        gLevel.highScore = gHighScore.beginer
+    } else if (boardSize === 8) {
+        gLevel.level = 'medium'
+        gLevel.highScore = gHighScore.medium
+    } else {
+        gLevel.highScore = gHighScore.expert
+        gLevel.level = 'expert'
+    }
+    // update the DOM
+    var textScore;
+    (gLevel.highScore === Infinity )? textScore = '00' : textScore = gLevel.highScore
+    // (gLevel.highScore === Infinity )? textScore = 00 : textScore = gLevel.highScore
+    document.querySelector('.score').innerText = textScore;
     initGame()
 }
 
@@ -29,11 +55,12 @@ function getLevel(boardSize, numOfMines) {
 function initGame() {
     gBoard = buildBoard()
     renderBoard(gBoard)
+
 }
 // activated after the first click
 function startGame(elCell) {
     startTimer()
-  
+
 }
 
 function buildBoard() {
@@ -55,20 +82,25 @@ function buildBoard() {
 // place the mines randomly on the board
 function placeRandomMines(board, elCell) {
     var emptyCells = findEmptyCells(board, elCell)
+
+    // duplicate the old array for undo btn
+    gGame.lastPlayBoard = board.slice()
+
     for (var i = 0; i < gLevel.MINES; i++) {
         var randIdx = getRandomInt(0, emptyCells.length)
         var target = emptyCells[randIdx] //* we got en object
         board[target.i][target.j].isMine = true
-        // emptyCells = emptyCells.splice(randIdx, 1)
+        emptyCells.splice(randIdx, 1)
         renderBoard(board)
     }
 }
 // empty cell array for the bombs
 function findEmptyCells(board, elCell) {
+    console.log(elCell);
     var emptyCells = []
     for (var i = 0; i < board.length; i++) {
         for (var j = 0; j < board[0].length; j++) {
-            if (board[i] === +elCell.dataset.i && board[j] === +elCell.dataset.j) continue;
+            if (i === +elCell.dataset.i && j === +elCell.dataset.j) continue;
             var emptyCell = { i, j }
             emptyCells.push(emptyCell)
         }
@@ -143,8 +175,10 @@ function cellClicked(elCell) {
         gGame.isOn = true
         placeRandomMines(gBoard, elCell)
         startGame(elCell)
-
     }
+    // duplicate the old array for undo btn
+    gGame.lastPlayBoard = gBoard.slice()
+
     var cellClasses = elCell.classList
     if (cellClasses.contains('show')) return
     if (cellClasses.contains('hide')) {
@@ -172,6 +206,7 @@ function cellClicked(elCell) {
         if (checkGameOver()) {
             console.log('you won the game!! to play again click the emoji');
             clearInterval(gIntervalId);
+            checkHighScore()
         }
     }
 
@@ -180,10 +215,15 @@ function cellClicked(elCell) {
 function cellMarked(elCell) {
     if (!gGame.isOn) {
         gGame.isOn = true
+        placeRandomMines(gBoard, elCell)
         startGame(elCell)
 
     }
     if (elCell.classList.contains('show')) return
+
+    // duplicate the old array for undo btn
+    gGame.lastPlayBoard = gBoard.slice()
+
 
     //    update the model 
     var cellPos = {
@@ -193,17 +233,25 @@ function cellMarked(elCell) {
     var cell = gBoard[cellPos.i][cellPos.j]
     gBoard[cellPos.i][cellPos.j].isMarked = cell.isMarked ? false : true
 
+    gBoard[cellPos.i][cellPos.j].isMarked ? gGame.markedCount++ : gGame.markedCount--
+
     // update the DOM
     var value = elCell.innerText
     if (value === EMPTY) {
+        // gGame.markedCount++
         elCell.innerText = FLAG
-        gGame.markedCount++
 
-    } else if (value === FLAG) {
+    } else {
+        // gGame.markedCount= gGame.markedCount -1
         elCell.innerText = EMPTY
-        gGame.markedCount--
     }
     renderBoard(gBoard)
+
+    if (checkGameOver()) {
+        console.log('you won the game!! to play again click the emoji');
+        checkHighScore()
+        clearInterval(gIntervalId);
+    }
 }
 // expention 
 function expandShown(board, i, j) {
@@ -225,6 +273,8 @@ function expandShown(board, i, j) {
             elNegCell.classList.replace('hide', 'show')
             gGame.shownCount++
 
+            // // duplicate the old array for undo btn
+            // gGame.lastPlayBoard = gBoard.slice()
 
             renderBoard(gBoard)
             if (currCell.minesAroundCount === 0) {
@@ -235,8 +285,10 @@ function expandShown(board, i, j) {
 }
 
 function gameOver() {
-    document.querySelector('body').style.backgroundColor = 'rgb(58, 10, 10)'
-    document.querySelector('.header').style.backgroundColor = 'darkRed'
+    document.querySelector('table').classList.add('losing')
+    document.querySelector('body').classList.add('losing')
+    // document.querySelector('body').style.backgroundColor = 'rgb(58, 10, 10)'
+    document.querySelector('.header').classList.add('losing')
     console.log('you lost!');
     var elMines = document.querySelectorAll('.mine')
     for (var i = 0; i < elMines.length; i++) {
@@ -255,13 +307,15 @@ function gameOver() {
         var elEmoji = document.querySelector('.emoji')
         elEmoji.innerText = '😖'
         clearInterval(gIntervalId);
+
     }
 
 }
 
 function checkGameOver() {
     var shouldBeShown = gLevel.SIZE ** 2 - gLevel.MINES
-    if (gGame.markedCount == gLevel.MINES && gGame.shownCount === shouldBeShown) return true
+    if (gGame.shownCount + gGame.markedCount === gLevel.SIZE ** 2 ||
+        gGame.markedCount == gLevel.MINES && gGame.shownCount === shouldBeShown) return true
 
 }
 // when clicking the smiley
@@ -270,17 +324,19 @@ function restart() {
         isOn: false,
         shownCount: 0,
         markedCount: 0,
-        secsPassed: 0
+        secsPassed: 0,
+        lastPlayBoard: null
     }
     gBoard;
     gStartTime = null
     clearInterval(gIntervalId);
-    initGame()
     document.querySelector('.emoji').innerText = '😃'
     document.querySelector('.timer').innerText = '00:00'
-    document.querySelector('body').style.backgroundColor = 'rgb(41, 39, 39)'
-    document.querySelector('.header').style.backgroundColor = 'rgb(71, 62, 62)'
+    document.querySelector('body').classList.remove('losing')
+    document.querySelector('.header').classList.remove('losing')
+    document.querySelector('table').classList.remove('losing')
 
+    initGame()
 }
 // timer
 function startTimer() {
@@ -295,7 +351,8 @@ function updateTime() {
     var elTime = document.querySelector('.timer')
     var time = seconds < 10 ? '0' + parseInt(seconds) : parseInt(seconds)
     time += ':'
-    time += secondsArr[1] < 10 ? '0' + secondsArr[1] : secondsArr[1] || '00'
-
+    time += secondsArr[1] < 10 ? '0' + secondsArr[1] : parseInt(secondsArr[1] / 10) || '00'
+    gGame.secsPassed = seconds
     elTime.innerText = time
 }
+

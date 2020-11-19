@@ -17,15 +17,17 @@
     </div>
     <div class="content">
         <div class="header">
+            <span onclick="getHint(this)"><img class="bulb" src="imgs/light.png"><img class="bulb" src="imgs/light.png"><img class="bulb" src="imgs/light.png"></span>
+            <span class="undoBtn" onclick="undo()">undo</span>
             <span class="bestScore">BEST SCORE:
-                <span class="score"> 00</span>
+                <span class="score"></span>
             </span>
             <span class="emoji" onclick="restart()">😃</span>
             <span class="timer">00:00</span>
             <span class="lives">
                 <img class="img" src="imgs/heart.png">
                 <img class="img" src="imgs/heart.png">
-                <img class="img" src="imgs/heart.png">
+                <img class="black-heart" src="imgs/black-heart.png">
             
             </span>
         </div>
@@ -38,6 +40,7 @@
 
     <script src="js/utils.js"></script>
     <script src="js/maim.js"></script>
+    <script src="js/bonus.js"></script>
 </body>
 
 </html>
