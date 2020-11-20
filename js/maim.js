@@ -21,6 +21,7 @@ var gGame = {
     isOn: false,
     shownCount: 0,
     markedCount: 0,
+    safeClicks: 3,
     // lastPlayBoard: null,
     lives: 3
 }
@@ -175,8 +176,7 @@ function WhichButton(event, elCell) {
             // right click
             cellMarked(elCell);
             break;
-        default:
-            return;
+        default: return;
 
     }
 }
@@ -211,7 +211,7 @@ function cellClicked(elCell) {
             return
         }
 
-        if (!cellClasses.innerText) {
+        if ( gBoard[cellPos.i][cellPos.j].minesAroundCount === 0) {
             expandShown(gBoard, cellPos.i, cellPos.j)
         }
 
@@ -318,6 +318,7 @@ function restart() {
         shownCount: 0,
         markedCount: 0,
         lastPlayBoard: null,
+        safeClicks: 3,
         lives: 3
     }
     gBoard;
@@ -328,6 +329,7 @@ function restart() {
     document.querySelector('.header').classList.remove('losing')
     document.querySelector('table').classList.remove('losing')
     document.querySelector('.modal').style.display = 'none';
+    document.querySelector('.safeBtn').classList.remove('unSafeBtn')
 
     initGame()
 }

@@ -57,7 +57,6 @@ function duplicate(dupBoard) {
 }
 
 function clickAMine(elCell, cellPos) {
-    console.log(elCell);
     if (gGame.lives !== 0) var audio = new Audio('./audio/error.mp3');
     else var audio = new Audio('./audio/gameOver.mp3');
 
@@ -68,12 +67,14 @@ function clickAMine(elCell, cellPos) {
 
 // hide mine after a click 
 function changeMineBackToHide(elCell, cellPos) {
-   
-    // update the model
-    gBoard[cellPos.i][cellPos.j].isShown = false;
-    // update the DOM
-    elCell.classList.replace('show', 'hide');
-    renderBoard(gBoard);
+    if (gGame.lives !== 0) {
+
+        // update the model
+        gBoard[cellPos.i][cellPos.j].isShown = false;
+        // update the DOM
+        elCell.classList.replace('show', 'hide');
+        renderBoard(gBoard);
+    }
 }
 
 // render the hearts 
@@ -95,4 +96,36 @@ function renderLives() {
         default:
             break;
     }
+}
+
+function safeClick() {
+    var safeCells = getSafeCells(gBoard)
+    var randIdx = getRandomInt(0, safeCells.length)
+    var safeCell = safeCells[randIdx]
+    console.log(safeCell);
+    // update the DOM
+    var elSafeCell = document.querySelector(`[data-i="${safeCell.i}"][data-j="${safeCell.j}"]`)
+    elSafeCell.classList.add('safe')
+    setTimeout(function () {
+        elSafeCell.classList.remove('safe')
+    }, 500)
+    --gGame.safeClicks
+    console.log(gGame.safeClicks);
+    if (gGame.safeClicks === 0) {
+        document.querySelector('.safeBtn').classList.add('unSafeBtn')
+    }
+
+}
+
+function getSafeCells(board) {
+    var safeCells = []
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+            if (!board[i][j].isMine && !board[i][j].isShown && !board[i][j].isMarked) {
+                var safeCellPos = { i, j }
+                safeCells.push(safeCellPos)
+            }
+        }
+    }
+    return safeCells;
 }

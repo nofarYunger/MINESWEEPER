@@ -68,7 +68,7 @@ display: inline-block;
     width: 45px;
 }
 .bulb{
-    width:50px;
+    width:45px;
     margin-left: 10px;
 }
 .emoji:hover{
@@ -85,7 +85,7 @@ table{
     margin:  auto;
     text-align : center;
 }
-.undoBtn{
+.btn{
     cursor: pointer;
     background-color: wheat;
     border-radius: 5%;
@@ -122,4 +122,13 @@ body.losing{
     z-index: 1; 
     width: 50%; 
     height: 20%; 
+}
+.safe{
+    background-color:  wheat;
+    color:  rgb(71, 62, 62);
+}
+
+.unSafeBtn{
+    pointer-events: none;
+    cursor: default;
 }
