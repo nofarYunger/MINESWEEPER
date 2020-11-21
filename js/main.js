@@ -97,16 +97,20 @@ function renderBoard(board) {
         for (var j = 0; j < board[0].length; j++) {
             var cell = { i, j };
             var currCell = board[i][j];
+
             var className = '';
             className += currCell.isMine ? 'mine ' : '';
             className += currCell.isMarked ? 'marked ' : '';
             className += currCell.isShown ? 'show ' : 'hide';
+
             var onClick = currCell.isHintOn ? 'onClick="lightUpOnClick(this)" ' : 'onmousedown="WhichButton(event,this)"';
 
-
-            if (currCell.isMarked) strHtml += `<td data-i="${i}" data-j="${j}" ${onClick}  class=" cell ${className}">${FLAG}</td>`;
-            else if (!currCell.isShown) strHtml += `<td data-i="${i}" data-j="${j}" ${onClick}  class=" cell ${className}"></td>`;
-            else strHtml += `<td data-i="${i}" data-j="${j}"  ${onClick}  class=" cell ${className}">${currCell.isMine ? MINE : mineNegsCount(cell, gBoard)}</td>`
+            var cellInnerText;
+            if (currCell.isMarked) cellInnerText = FLAG
+            else if (!currCell.isShown) cellInnerText = ''
+            else  cellInnerText = currCell.isMine ? MINE : mineNegsCount(cell, gBoard)
+            
+            strHtml += `<td data-i="${i}" data-j="${j}" ${onClick}  class=" cell ${className}">${cellInnerText}</td>`; 
 
 
         }
@@ -361,6 +365,7 @@ function updateTime() {
     var time = seconds < 10 ? '0' + parseInt(seconds) : parseInt(seconds);
     time += ':'
     time += secondsArr[1] < 10 ? '0' + secondsArr[1] : parseInt(secondsArr[1] / 10) || '00';
+    if (time.length >= 6) time = time.slice(0, 5)
     elTime.innerText = time;
 }
 

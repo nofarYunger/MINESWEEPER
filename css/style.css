@@ -69,9 +69,10 @@ display: inline-block;
     width: 40px;
     margin-left: 10px;
 }
-.bulb{
+.light{
     width:45px;
     margin-left: 10px;
+    cursor: pointer;
 }
 .emoji:hover{
     cursor: pointer;
@@ -116,7 +117,7 @@ body.losing{
     color: rgb(20, 3, 3);
     margin: auto;
     margin-left: 25%;
-    font-size: 50px;
+    font-size: 40px;
     text-emphasis: bold;
     padding: 50px;
     box-shadow: 2px 0px 4px 3px rgb(33 31 31);
@@ -124,7 +125,7 @@ body.losing{
     position: fixed; 
     z-index: 1; 
     width: 50%; 
-    height: 20%; 
+    /* height: 20%;  */
 }
 .safe{
     background-color:  wheat;
@@ -134,12 +135,4 @@ body.losing{
 .btnOff{
     pointer-events: none;
     cursor: default;
-}
-.score {
-    margin: 0;
-    padding-right: 0;
-}
-.numOfSafeClicks {
-    margin: 0;
-    padding-right: 0;
 }

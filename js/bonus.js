@@ -48,7 +48,7 @@ function undo() {
     gGame.turnCount--
 
 }
-// copy the current gBoard and save it in the gGame object.
+// copy the current gBoard and save it in the gPlayedMoves
 function duplicate() {
     var dupBoard = []
     for (var i = 0; i < gBoard.length; i++) {
@@ -58,6 +58,7 @@ function duplicate() {
     return dupBoard;
 }
 
+// takes a life every time the user clicks on a mine
 function clickAMine(elCell, cellPos) {
     if (gGame.lives !== 0) var audio = new Audio('./audio/error.mp3');
     else var audio = new Audio('./audio/gameOver.mp3');
@@ -100,6 +101,7 @@ function renderLives() {
     }
 }
 
+// on safe click
 function safeClick() {
     var safeCells = getSafeCells(gBoard)
     var randIdx = getRandomInt(0, safeCells.length)
@@ -118,6 +120,7 @@ function safeClick() {
 
 }
 
+// find all the cells that arent a mine
 function getSafeCells(board) {
     var safeCells = []
     for (var i = 0; i < gBoard.length; i++) {
@@ -131,12 +134,13 @@ function getSafeCells(board) {
     return safeCells;
 }
 
+// prints the hints at the start of the game
 function renderHints() {
     var elHints = document.querySelector('.hints')
     elHints.innerHTML = `${HINT}${HINT}${HINT}`
 }
 
-
+// go over the board and place a class that activate the hint function
 function toggleHintClassToAllCells(elLight) {
     if (elLight) {
         elLight.src = 'imgs/lightOff.png'
@@ -150,6 +154,7 @@ function toggleHintClassToAllCells(elLight) {
     renderBoard(gBoard)
 }
 
+// go over all the negs and make them show up
 function lightUpOnClick(elCell) {
     var cellPos = {
         i: +elCell.dataset.i,
@@ -173,7 +178,7 @@ function lightUpOnClick(elCell) {
     setTimeout(lightsOff, 500, cellsAlreadyShown, cellPos)
 }
 
-
+// after .5 sec make the hint dissappear
 function lightsOff(cellsAlreadyShown, cellPos) {
 
     for (var i = cellPos.i - 1; i <= cellPos.i + 1; i++) {
