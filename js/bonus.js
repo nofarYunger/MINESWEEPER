@@ -39,20 +39,22 @@ function checkHighScore() {
 }
 // when undo is clicked
 function undo() {
-    console.table(gGame.lastPlayBoard);
-    console.table(gBoard);
-    // renderBoard(gGame.lastPlayBoard)
-    renderBoard(duplicate(gGame.lastPlayBoard))
-    gGame.lastPlayBoard = gGame.lastPlayBoard
-    // duplicate(gBoard, gGame.lastPlayBoard)
-    console.log('undo');
-}
+    console.table(gPlayedMoves);
+    var lastBoard = gPlayedMoves[0]
+    console.log(lastBoard);
+    gPlayedMoves.slice(0, 1)
+    console.log(gPlayedMoves.slice(0, 1));
+    renderBoard(lastBoard)
+    gGame.turnCount--
 
+}
 // copy the current gBoard and save it in the gGame object.
-function duplicate(dupBoard) {
-    for (var i = 0; i < gBoard.length; i++)
-        for (var j = 0; j < gBoard[i].length; j++)
-            dupBoard[i][j] = gBoard[i][j];
+function duplicate() {
+    var dupBoard = []
+    for (var i = 0; i < gBoard.length; i++) {
+        dupBoard[i] = gBoard[i].slice()
+
+    }
     return dupBoard;
 }
 
@@ -102,7 +104,6 @@ function safeClick() {
     var safeCells = getSafeCells(gBoard)
     var randIdx = getRandomInt(0, safeCells.length)
     var safeCell = safeCells[randIdx]
-    console.log(safeCell);
     // update the DOM
     var elSafeCell = document.querySelector(`[data-i="${safeCell.i}"][data-j="${safeCell.j}"]`)
     elSafeCell.classList.add('safe')
@@ -111,7 +112,6 @@ function safeClick() {
     }, 500)
     --gGame.safeClicks
     document.querySelector('.numOfSafeClicks').innerText = gGame.safeClicks
-    console.log(gGame.safeClicks);
     if (gGame.safeClicks === 0) {
         document.querySelector('.safeBtn').classList.add('btnOff')
     }
@@ -160,7 +160,7 @@ function lightUpOnClick(elCell) {
         if (i < 0 || i >= gBoard.length) continue
         for (var j = cellPos.j - 1; j <= cellPos.j + 1; j++) {
             if (j < 0 || j >= gBoard.length) continue
-           
+
             if (gBoard[i][j].isShown) cellsAlreadyShown.push(gBoard[i][j]);
 
             gBoard[i][j].isShown = true
