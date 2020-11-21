@@ -5,7 +5,7 @@
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     text-align: center;
     /* background-image: url('../imgs/bg.jpg'); */
-    transition: .3s;
+    transition: .5s;
     background-color: rgb(41, 39, 39);
     color: wheat
 }
@@ -17,16 +17,16 @@ h1{
 .header{
     background-color: rgb(71, 62, 62);
     text-align: center;
-    font-size:30px;
-    padding: 20px;
+    font-size:25px;
+    padding-bottom: 20px;
     margin-bottom: 50px;
     margin-top: 50px;
     margin-left: none;
     margin-top: none;
     box-shadow: 2px 2px 3px 3px rgb(33 26 26);
 }
-.header span{
-margin-right: 60px;
+.header>span{
+margin-right: 50px;
 display: inline-block;
 
 }
@@ -62,10 +62,12 @@ display: inline-block;
 }
 
 .img{
-    width: 40px;
+    width: 35px;
+    margin-left: 10px;
 }
 .imgHeart{
-    width: 45px;
+    width: 40px;
+    margin-left: 10px;
 }
 .bulb{
     width:45px;
@@ -76,7 +78,7 @@ display: inline-block;
 }
 
 .emoji{
-    font-weight: 150px;
+    font-size: 55px;
     width: 90px;
 }
 
@@ -94,6 +96,7 @@ table{
     padding-right: 20px;
     box-shadow: 5px 3px 4px rgb(41 39 39) ;
     color:  rgb(71, 62, 62);
+    text-align: center;
 }
 .header.losing{
     box-shadow: 2px 2px 3px 3px rgb(31 7 7);
@@ -128,7 +131,15 @@ body.losing{
     color:  rgb(71, 62, 62);
 }
 
-.unSafeBtn{
+.btnOff{
     pointer-events: none;
     cursor: default;
+}
+.score {
+    margin: 0;
+    padding-right: 0;
+}
+.numOfSafeClicks {
+    margin: 0;
+    padding-right: 0;
 }

@@ -110,9 +110,10 @@ function safeClick() {
         elSafeCell.classList.remove('safe')
     }, 500)
     --gGame.safeClicks
+    document.querySelector('.numOfSafeClicks').innerText = gGame.safeClicks
     console.log(gGame.safeClicks);
     if (gGame.safeClicks === 0) {
-        document.querySelector('.safeBtn').classList.add('unSafeBtn')
+        document.querySelector('.safeBtn').classList.add('btnOff')
     }
 
 }
@@ -129,3 +130,65 @@ function getSafeCells(board) {
     }
     return safeCells;
 }
+
+function renderHints() {
+    var elHints = document.querySelector('.hints')
+    elHints.innerHTML = `${HINT}${HINT}${HINT}`
+}
+
+
+function toggleHintClassToAllCells(elLight) {
+    if (elLight) {
+        elLight.src = 'imgs/lightOff.png'
+        elLight.classList.add('btnOff')
+    }
+    for (var i = 0; i < gLevel.SIZE; i++) {
+        for (var j = 0; j < gLevel.SIZE; j++) {
+            gBoard[i][j].isHintOn = (!gBoard[i][j].isHintOn) ? true : false
+        }
+    }
+    renderBoard(gBoard)
+}
+
+function lightUpOnClick(elCell) {
+    var cellPos = {
+        i: +elCell.dataset.i,
+        j: +elCell.dataset.j
+    }
+    var cellsAlreadyShown = []
+    for (var i = cellPos.i - 1; i <= cellPos.i + 1; i++) {
+        if (i < 0 || i >= gBoard.length) continue
+        for (var j = cellPos.j - 1; j <= cellPos.j + 1; j++) {
+            if (j < 0 || j >= gBoard.length) continue
+           
+            if (gBoard[i][j].isShown) cellsAlreadyShown.push(gBoard[i][j]);
+
+            gBoard[i][j].isShown = true
+        }
+    }
+    renderBoard(gBoard)
+
+
+    toggleHintClassToAllCells()
+    setTimeout(lightsOff, 500, cellsAlreadyShown, cellPos)
+}
+
+
+function lightsOff(cellsAlreadyShown, cellPos) {
+
+    for (var i = cellPos.i - 1; i <= cellPos.i + 1; i++) {
+        if (i < 0 || i >= gBoard.length) continue
+        for (var j = cellPos.j - 1; j <= cellPos.j + 1; j++) {
+            if (j < 0 || j >= gBoard.length) continue
+
+            gBoard[i][j].isShown = false
+        }
+    }
+
+    for (var i = 0; i < cellsAlreadyShown.length; i++) {
+        cellsAlreadyShown[i].isShown = true
+    }
+
+    renderBoard(gBoard)
+}
+

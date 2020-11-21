@@ -17,20 +17,17 @@
     </div>
     <div class="content">
         <div class="header">
-           
+
             <span class="btn" onclick="undo()">undo</span>
-            <span class="btn safeBtn" onclick=" safeClick()">safe click</span>
-            <span onclick="getHint(this)">
-                <img class="bulb" src="imgs/light.png">
-                <img class="bulb" src="imgs/light.png">
-                <img class="bulb" src="imgs/light.png">
-            </span>
-            <span class="bestScore">BEST SCORE:
+            <span class="btn safeBtn" onclick=" safeClick()">safe clicks: <span class="numOfSafeClicks">3</span></span>
+            <span class="lives"> </span>
+            <span class="emoji" onclick="restart()">😃</span>
+            <span class="bestScore">HIGH SCORE:
                 <span class="score"></span>
             </span>
-            <span class="emoji" onclick="restart()">😃</span>
+            
+            <span class="hints"> </span>
             <span class="timer">00:00</span>
-            <span class="lives"> </span>
         </div>
         <table>
             <tbody class="board">

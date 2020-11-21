@@ -2,7 +2,7 @@
 
 const MINE = '<img class="img" src="imgs/mine.jpg">';
 const FLAG = '<img class="img" src="imgs/flag.png">';
-const HINT = '<img class="img" src="imgs/bulb.png">';
+const HINT = '<img class="img light"  onclick="toggleHintClassToAllCells(this)" src="imgs/light.png">';
 const LIFE = '<img class="img" src="imgs/heart.png">';
 const blk_LIFE = '<img class="imgHeart" src="imgs/b-heart.png">';
 const EMPTY = '';
@@ -22,8 +22,9 @@ var gGame = {
     shownCount: 0,
     markedCount: 0,
     safeClicks: 3,
-    // lastPlayBoard: null,
+    hints: 3,
     lives: 3
+    // lastPlayBoard: null,
 }
 
 // from the radio btn
@@ -64,6 +65,7 @@ function initGame() {
     gBoard = buildBoard();
     renderBoard(gBoard);
     renderLives();
+    renderHints();
 
 }
 // activated after the first click
@@ -82,7 +84,8 @@ function buildBoard() {
                 minesAroundCount: 0,
                 isShown: false,
                 isMine: false,
-                isMarked: false
+                isMarked: false,
+                isHintOn: false
             }
         }
     }
@@ -90,7 +93,7 @@ function buildBoard() {
 }
 
 function renderBoard(board) {
-    renderLives();
+   
     var strHtml = ''
     for (var i = 0; i < board.length; i++) {
         strHtml += '<tr>';
@@ -101,9 +104,13 @@ function renderBoard(board) {
             className += currCell.isMine ? 'mine ' : '';
             className += currCell.isMarked ? 'marked ' : '';
             className += currCell.isShown ? 'show ' : 'hide';
-            if (currCell.isMarked) strHtml += `<td data-i="${i}" data-j="${j}" onmousedown="WhichButton(event,this)"  class=" cell ${className}">${FLAG}</td>`;
-            else if (!currCell.isShown) strHtml += `<td data-i="${i}" data-j="${j}" onmousedown="WhichButton(event,this)"  class=" cell ${className}"></td>`;
-            else strHtml += `<td data-i="${i}" data-j="${j}"  onmousedown="WhichButton(event,this)"  class=" cell ${className}">${currCell.isMine ? MINE : mineNegsCount(cell, gBoard)}</td>`
+            var onClick = currCell.isHintOn ? 'onClick="lightUpOnClick(this)" ' : 'onmousedown="WhichButton(event,this)"';
+
+
+            if (currCell.isMarked) strHtml += `<td data-i="${i}" data-j="${j}" ${onClick}  class=" cell ${className}">${FLAG}</td>`;
+            else if (!currCell.isShown) strHtml += `<td data-i="${i}" data-j="${j}" ${onClick}  class=" cell ${className}"></td>`;
+            else strHtml += `<td data-i="${i}" data-j="${j}"  ${onClick}  class=" cell ${className}">${currCell.isMine ? MINE : mineNegsCount(cell, gBoard)}</td>` 
+
 
         }
         strHtml += '</tr>'
@@ -189,6 +196,7 @@ function cellClicked(elCell) {
 
     var cellClasses = elCell.classList
     if (cellClasses.contains('show')) return;
+    if (cellClasses.contains('marked')) return;
     if (cellClasses.contains('hide')) {
         // update the model
         var cellPos = {
@@ -211,7 +219,7 @@ function cellClicked(elCell) {
             return
         }
 
-        if ( gBoard[cellPos.i][cellPos.j].minesAroundCount === 0) {
+        if (gBoard[cellPos.i][cellPos.j].minesAroundCount === 0) {
             expandShown(gBoard, cellPos.i, cellPos.j)
         }
 
@@ -319,7 +327,8 @@ function restart() {
         markedCount: 0,
         lastPlayBoard: null,
         safeClicks: 3,
-        lives: 3
+        lives: 3,
+        hints: 3
     }
     gBoard;
     gStartTime = null
@@ -329,7 +338,9 @@ function restart() {
     document.querySelector('.header').classList.remove('losing')
     document.querySelector('table').classList.remove('losing')
     document.querySelector('.modal').style.display = 'none';
-    document.querySelector('.safeBtn').classList.remove('unSafeBtn')
+    document.querySelector('.safeBtn').classList.remove('btnOff')
+    document.querySelector('.light').classList.remove('btnOff')
+    document.querySelector('.numOfSafeClicks').innerText = '3'
 
     initGame()
 }
